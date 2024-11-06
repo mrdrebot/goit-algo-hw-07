@@ -30,13 +30,12 @@ class Birthday(Field):
         try:
             # pass
             result = re.search(pattern, value)
-            print(result)
-            # print(result.group())
-            datetime_object = datetime.strptime(result.group(), "%d.%m.%Y")
-            print(datetime_object)
-            # Додайте перевірку коректності даних
-            # та перетворіть рядок на об'єкт datetime
-
+            if result:
+                # print(result)
+                datetime_object = datetime.strptime(result.group(), "%d.%m.%Y")
+                # print(datetime_object)
+            else:
+                raise ValueError()
         except ValueError:
             raise ValueError("Invalid date format. Use DD.MM.YYYY")
 
@@ -111,9 +110,9 @@ print(maks_record)
 # maks_record.add_phone("5555555555")
 # maks_record.add_phone("5555555556")
 # print(maks_record)
-# maks_record.add_birthday("5555555556")
+maks_record.add_birthday("5555555556")
 # maks_record.add_birthday("55.55.5555")
-maks_record.add_birthday("30.02.5555")
+maks_record.add_birthday("14.02.5555")
 print(maks_record)
 
 # miha_record.add_phone("5555555557")
