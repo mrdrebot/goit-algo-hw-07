@@ -1,6 +1,6 @@
 from collections import UserDict
 import re
-from datetime import datetime
+from datetime import datetime, date, timedelta
 
 class Field:
     def __init__(self, value):
@@ -25,15 +25,16 @@ class Phone(Field):
         
 class Birthday(Field):
     def __init__(self, value):
-        print(f"Entered value {value}")
+        # print(f"Entered birthday {value}")
         pattern = r'^\d{2}\.\d{2}\.\d{4}$'
         try:
             # pass
             result = re.search(pattern, value)
             if result:
                 # print(result)
-                datetime_object = datetime.strptime(result.group(), "%d.%m.%Y")
-                # print(datetime_object)
+                birthday = datetime.strptime(result.group(), "%d.%m.%Y")
+                # print(birthday_object)
+                super().__init__(birthday)
             else:
                 raise ValueError()
         except ValueError:
@@ -51,6 +52,7 @@ class Record:
 
     def add_birthday(self, birthday_date):
         self.birthday = Birthday(birthday_date)
+        # print(self.birthday)
 
     def remove_phone(self, remove_phone):
         for phone in self.phones:
@@ -88,6 +90,37 @@ class AddressBook(UserDict):
     def delete(self, contact_name):
         self.data.pop(contact_name)
 
+    def get_upcoming_birthdays(self):
+        # print("get_upcoming_birthdays")
+        upcoming_birthdays = []
+        today = date.today()
+        print(self.data)
+
+        for user_name, user_data in self.data.items():
+            print(f"{user_name}: {user_data.birthday}")
+            # print(type(user_data.birthday))
+            # birthday_this_year = user["birthday"].replace(year=today.year)
+            birthday_this_year = user_data.birthday.value.replace(year=today.year)
+            print(birthday_this_year)
+
+            if birthday_this_year < today:
+                birthday_this_year = user_data.birthday.value.replace(year=today.year + 1)
+
+            # """
+            # Додайте на цьому місці перевірку, чи не буде 
+            # припадати день народження вже наступного року.
+            # """   
+
+            # if 0 <= (birthday_this_year - today).days <= days:
+            #     birthday_this_year = adjust_for_weekend(birthday_this_year)
+                # """ 
+                # Додайте перенесення дати привітання на наступний робочий день,
+                # якщо день народження припадає на вихідний. 
+                # """
+        #         congratulation_date_str = date_to_string(birthday_this_year)
+        #         upcoming_birthdays.append({"name": user["name"], "congratulation_date": congratulation_date_str})
+        # return upcoming_birthdays
+
     def __str__(self):
         return f"Contacts:\n{"\n".join(str(user_data) for user_data in self.data.values())}"
 
@@ -100,14 +133,14 @@ class AddressBook(UserDict):
 book = AddressBook()
 print("---Add users records---")
 maks_record = Record("Maks")
-print(maks_record)
+# print(maks_record)
 # miha_record = Record("Miha")
 # print(miha_record)
 # alex_record = Record("Alex")
 # print(alex_record)
 # print("---Add users phones---")
-# maks_record.add_phone("1234567890")
-# maks_record.add_phone("5555555555")
+maks_record.add_phone("1234567890")
+maks_record.add_phone("5555555555")
 # maks_record.add_phone("5555555556")
 # print(maks_record)
 # maks_record.add_birthday("5555555556")
@@ -130,7 +163,7 @@ print(maks_record)
 # print(alex_record.find_phone("5555555558"))
 # print(maks_record.find_phone("7777777779"))
 # print("---Add contacts in the contacts book---")
-# book.add_record(maks_record)
+book.add_record(maks_record)
 # book.add_record(miha_record)
 # book.add_record(alex_record)
 # print(book)
@@ -140,3 +173,4 @@ print(maks_record)
 # print("---Delete contact in the contacts book---")
 # book.delete("Miha")
 # print(book)
+book.get_upcoming_birthdays()

@@ -18,7 +18,6 @@ def prepare_user_list(user_data):
 
 def find_next_weekday(start_date, weekday):
     days_ahead = weekday - start_date.weekday()
-    
     if days_ahead <= 0:
         days_ahead += 7
     return start_date + timedelta(days=days_ahead)
