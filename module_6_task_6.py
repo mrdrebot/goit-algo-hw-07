@@ -91,35 +91,38 @@ class AddressBook(UserDict):
         self.data.pop(contact_name)
 
     def get_upcoming_birthdays(self):
+        def find_next_weekday(start_date, weekday):
+            days_ahead = weekday - start_date.weekday()
+            if days_ahead <= 0:
+                days_ahead += 7
+            return start_date + timedelta(days=days_ahead)
+
+
+        def adjust_for_weekend(birthday):
+            if birthday.weekday() >= 5:
+                return find_next_weekday(birthday, 0)
+            return birthday
+        
         # print("get_upcoming_birthdays")
+        days = 7
         upcoming_birthdays = []
         today = date.today()
         print(self.data)
 
         for user_name, user_data in self.data.items():
             print(f"{user_name}: {user_data.birthday}")
-            # print(type(user_data.birthday))
-            # birthday_this_year = user["birthday"].replace(year=today.year)
             birthday_this_year = user_data.birthday.value.replace(year=today.year)
             print(birthday_this_year)
 
-            if birthday_this_year < today:
+            if birthday_this_year.date() < today:
                 birthday_this_year = user_data.birthday.value.replace(year=today.year + 1)
+                print(birthday_this_year)
 
-            # """
-            # Додайте на цьому місці перевірку, чи не буде 
-            # припадати день народження вже наступного року.
-            # """   
-
-            # if 0 <= (birthday_this_year - today).days <= days:
-            #     birthday_this_year = adjust_for_weekend(birthday_this_year)
-                # """ 
-                # Додайте перенесення дати привітання на наступний робочий день,
-                # якщо день народження припадає на вихідний. 
-                # """
-        #         congratulation_date_str = date_to_string(birthday_this_year)
-        #         upcoming_birthdays.append({"name": user["name"], "congratulation_date": congratulation_date_str})
-        # return upcoming_birthdays
+            if 0 <= (birthday_this_year.date() - today).days <= days:
+                birthday_this_year = adjust_for_weekend(birthday_this_year)
+                congratulation_date_str = birthday_this_year.strftime("%Y.%m.%d")
+                upcoming_birthdays.append({"name": user_name, "birthday": congratulation_date_str})
+        return upcoming_birthdays
 
     def __str__(self):
         return f"Contacts:\n{"\n".join(str(user_data) for user_data in self.data.values())}"
@@ -145,7 +148,7 @@ maks_record.add_phone("5555555555")
 # print(maks_record)
 # maks_record.add_birthday("5555555556")
 # maks_record.add_birthday("55.55.5555")
-maks_record.add_birthday("14.02.5555")
+maks_record.add_birthday("14.11.1992")
 print(maks_record)
 
 # miha_record.add_phone("5555555557")
@@ -173,4 +176,4 @@ book.add_record(maks_record)
 # print("---Delete contact in the contacts book---")
 # book.delete("Miha")
 # print(book)
-book.get_upcoming_birthdays()
+print(book.get_upcoming_birthdays())
