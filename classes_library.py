@@ -22,19 +22,13 @@ class Phone(Field):
         if len(phone) == 10 and phone.isdigit():
             super().__init__(phone)
         else:
-            raise ValueError("You have enterd less than 10 digitals!")
+            raise ValueError("You have enterd less than 10 digitals in the number!")
         
 class Birthday(Field):
     def __init__(self, value: str):
-        pattern: str = r'^\d{2}\.\d{2}\.\d{4}$'
-
         try:
-            result = re.search(pattern, value)
-            if result:
-                birthday = datetime.strptime(result.group(), "%d.%m.%Y")
-                super().__init__(birthday)
-            else:
-                raise ValueError()
+            datetime.strptime(value, "%d.%m.%Y")
+            super().__init__(value)
         except ValueError:
             raise ValueError("Invalid date format. Use DD.MM.YYYY")
 

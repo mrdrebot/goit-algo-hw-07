@@ -23,14 +23,7 @@ def input_error(func: Callable[[tuple], Callable[[tuple], tuple]]) -> Callable[[
 
 @input_error
 def add_contact(args: list, book: AddressBook):
-    if len(args) < 2:
-        raise IndexError("Enter the argument for the command!")
-
     name, phone, *_ = args
-
-    if name.isdigit() or not phone.isdigit():
-        raise ValueError("Name must contain symbols and phone number only digits!")
-
     record = book.find(name)
 
     if record and record.find_phone(phone):
@@ -49,14 +42,7 @@ def add_contact(args: list, book: AddressBook):
 
 @input_error
 def change_contact(args: list, book: AddressBook):
-    if len(args) < 3:
-        raise IndexError("You need to provide both name and phone!")
-
     name, old_phone, new_phone, *_  = args
-
-    if name.isdigit() or (not old_phone.isdigit() or not new_phone.isdigit()):
-        raise ValueError("Name must contain symbols and phone number only digits!")
-
     record = book.find(name)
 
     if record is None:
@@ -66,21 +52,14 @@ def change_contact(args: list, book: AddressBook):
         return "Contact changed."
 
 @input_error
-def show_phone(args: list, book: AddressBook):
-    if len(args) < 1:
-        raise IndexError("You need to provide name!")
-    
+def show_phone(args: list, book: AddressBook):  
     name, *_ = args
-
-    if name.isdigit():
-        raise ValueError("Entered name contain only digits!")
-
     record = book.find(name)
 
     if record is None:
         raise KeyError("Entered name hasn't find in base!")
     else:
-        return record
+        return ';\n'.join(phone.value for phone in record.phones)
 
 @input_error
 def show_all(book: AddressBook):
@@ -91,14 +70,7 @@ def show_all(book: AddressBook):
 
 @input_error
 def add_birthday(args, book: AddressBook):
-    if len(args) < 2:
-        raise IndexError("Enter the argument for the command!")
-
     name, birthday, *_ = args
-
-    if name.isdigit():
-        raise ValueError("Name must contain symbols and digits!")
-
     record = book.find(name)
 
     if record is None:
@@ -111,14 +83,7 @@ def add_birthday(args, book: AddressBook):
 
 @input_error
 def show_birthday(args, book: AddressBook):
-    if len(args) < 1:
-        raise IndexError("You need to provide name!")
-    
     name, *_ = args
-
-    if name.isdigit():
-        raise ValueError("Entered name contain only digits!")
-
     record = book.find(name)
 
     if record is None:
